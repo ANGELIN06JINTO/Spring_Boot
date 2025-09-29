@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraNote - Login</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #FFF8E1, #FFECB3, #E8F5E9, #FCE4EC);
+            color: #5D4037;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Glitter effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.15"><circle cx="10" cy="10" r="1" fill="#FFD700"/><circle cx="50" cy="50" r="1" fill="#FFD700"/><circle cx="90" cy="90" r="1" fill="#FFD700"/><circle cx="30" cy="70" r="1" fill="#FFD700"/><circle cx="70" cy="30" r="1" fill="#FFD700"/></svg>');
+            background-size: 50px 50px;
+            animation: glitter 20s infinite linear;
+            z-index: -1;
+        }
+        @keyframes glitter {
+            from { background-position: 0 0; }
+            to { background-position: 100% 100%; }
+        }
+
+        /* Navbar */
+        .navbar {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo { display: flex; align-items: center; }
+        .logo-icon { font-size: 2.5em; margin-right: 10px; color: #FFD700; text-shadow: 0 0 10px #FFD700; }
+        .app-name { font-family: 'Great Vibes', cursive; font-size: 2.5em; color: #B78A00; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
+
+        /* Login box */
+        .login-container {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.4);
+            box-shadow: 0 0 30px rgba(255,215,0,0.5);
+            border-radius: 20px;
+            padding: 40px 50px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease-in-out;
+        }
+        .login-container:hover { transform: translateY(-5px) scale(1.02); }
+
+        /* Golden glowing border */
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #FFD700, #FFC700, #F0E68C, #FFD700);
+            background-size: 200% 200%;
+            z-index: -1;
+            animation: glowing-border 4s infinite linear;
+            filter: blur(5px);
+        }
+        @keyframes glowing-border {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Form elements */
+        h2 { font-size: 2.2em; margin-bottom: 30px; color: #B78A00; text-shadow: 0 0 8px rgba(255,215,0,0.7); }
+        input[type="text"], input[type="password"] {
+            width: 100%; padding: 15px; margin-bottom: 20px;
+            background: rgba(255,255,255,0.5);
+            border: none; border-bottom: 2px solid #FFD700;
+            color: #5D4037; font-size: 1em; border-radius: 5px;
+            outline: none; transition: all 0.3s ease;
+        }
+        input:focus { background: #fff; border-bottom: 2px solid #FFC700; box-shadow: 0 0 10px rgba(255,215,0,0.5); }
+        input::placeholder { color: #8D6E63; }
+
+        button[type="submit"] {
+            width: 100%; padding: 15px;
+            background: linear-gradient(45deg, #FFD700, #FFC700);
+            color: #5D4037; border: none; border-radius: 5px;
+            font-size: 1.1em; font-weight: 700;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(255,215,0,0.3);
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,215,0,0.8); }
+
+        .login-container p { margin-top: 20px; font-size: 0.9em; color: #5D4037; }
+        .login-container a { color: #B78A00; text-decoration: none; font-weight: 700; transition: color 0.2s; }
+        .login-container a:hover { color: #FFD700; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
+
+        /* Alerts */
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+        .alert-danger { background: #FDECEA; color: #D32F2F; border: 1px solid #F5C6CB; }
+        .alert-success { background: #E6F4EA; color: #388E3C; border: 1px solid #C8E6C9; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon">🌟</span>
+            <span class="app-name">AuraNote</span>
+        </div>
+    </nav>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <h2>Login to AuraNote</h2>
+
+        <!-- Error / Logout Alerts -->
+        <div th:if="${param.error}" class="alert alert-danger">
+            <i>⚠</i> Invalid username or password
+        </div>
+        <div th:if="${param.logout}" class="alert alert-success">
+            <i>✔</i> You have been logged out
+        </div>
+
+        <!-- Login Form -->
+        <form th:action="@{/login}" method="post">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <p>Don't have an account? <a th:href="@{/signup}">Sign Up</a></p>
+    </div>
+</body>
+</html>

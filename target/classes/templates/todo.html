@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraNote - My Tasks</title>
+    <!-- Google Font: Pacifico (for the logo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <!-- Google Font: Caveat (for all placeholder text & now the sign-out button) -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* UPDATED: Pastel Moving Fusion Colors */
+        :root {
+            --dark-teal-accent: #008080;    
+            --pastel-purple: #CBAACB;       /* Pastel Purple */
+            --light-blue: #A2D2FF;          
+            --teal-color: #40E0D0;          /* Teal */
+            --pastel-green: #BDECB4;        /* Pastel Green */
+            --light-pink: #FFC7F0;          /* Light Pink */
+            /* Light Grape for Sign Out button and Logo */
+            --grape-color: #A37EBE;         
+
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+
+        /* Keyframes for the 'Moving Fusion' effect */
+        @keyframes MovingFusion {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        body {
+            /* Background is a fusion of Pastel Green and Light Pink */
+            background: linear-gradient(45deg, var(--pastel-green), var(--light-pink));
+            background-size: 400% 400%; 
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif; 
+            animation: MovingFusion 20s ease infinite; 
+        }
+        
+        .navbar {
+            /* STATIC GRADIENT for the bar (kept previous multi-color fusion) */
+            background: linear-gradient(90deg, var(--pastel-purple), var(--light-blue), var(--teal-color), var(--pastel-green), var(--light-pink));
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* UPDATED: Navbar Brand styling for solid light grape color */
+        .navbar-brand {
+            font-family: 'Pacifico', cursive; 
+            font-weight: 400; 
+            font-size: 1.8rem; 
+            letter-spacing: 0.05em; 
+            
+            /* Set the color to the light grape variable */
+            color: var(--grape-color); 
+
+            /* Soft light grape glow */
+            text-shadow: 
+                0 0 5px rgba(163, 126, 190, 0.7); 
+            transition: all 0.3s;
+        }
+
+        .navbar-brand:hover {
+            /* Enhance the glow slightly on hover */
+            text-shadow: 
+                0 0 8px rgba(163, 126, 190, 1);
+            opacity: 0.9;
+        }
+
+        /* Styling for the 🌟 emoji logo */
+        .navbar-brand .me-2 {
+            font-size: 1.2em; /* Slightly larger than text for emphasis */
+            line-height: 1;
+        }
+
+
+        /* Sign Out Button Styling uses the lighter grape color */
+        .btn-logout {
+            background-color: transparent;
+            /* Use grape color for border and text */
+            color: var(--grape-color); 
+            border: 2px solid var(--grape-color);
+            border-radius: 30px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s;
+            /* Apply cursive font and size */
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem; 
+            font-weight: 700;
+        }
+        
+        .btn-logout:hover {
+            /* Invert colors on hover */
+            background-color: var(--grape-color);
+            color: white; 
+        }
+        
+        /* UPDATED: Increased max-width for the main container */
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        /* New Style for the Cursive Header Title */
+        .header-title-style {
+            font-family: 'Pacifico', cursive; 
+            font-weight: 700; /* Pacifico looks naturally bold */
+            font-size: 1.8rem; /* Make it stand out */
+        }
+
+        .card-header {
+            /* STATIC GRADIENT for the header (kept previous multi-color fusion) */
+            background: linear-gradient(to right, var(--pastel-purple), var(--light-blue), var(--teal-color), var(--pastel-green), var(--light-pink));
+            color: white;
+            border-bottom: none;
+            padding: 1.5rem;
+        }
+
+        /* Adjust H2 style in header to ensure good alignment and space */
+        .card-header h2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-size: 1.5rem; /* Default size for the icon and overall height */
+        }
+
+        .card-header i {
+            font-size: 1.5rem; /* Keep icon size consistent */
+        }
+        
+        .task-form {
+            background-color: white;
+            border-radius: 50px;
+            padding: 0.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .task-input {
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            flex-grow: 1;
+        }
+        
+        .task-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* Placeholder color set to Pastel Purple, now with italic style */
+        .task-input::placeholder {
+            color: var(--pastel-purple); 
+            font-family: 'Caveat', cursive; 
+            font-size: 1.6rem; 
+            font-weight: 700;
+            font-style: italic;
+        }
+        
+        /* Placeholder color set to Pastel Purple */
+        .note-input::placeholder {
+            font-family: 'Caveat', cursive; 
+            color: var(--pastel-purple); 
+            font-size: 1.4rem; 
+            font-weight: 400;
+        }
+        
+        .btn-add {
+            /* STATIC GRADIENT for the button (kept previous multi-color fusion) */
+            background: linear-gradient(to right, var(--pastel-purple), var(--light-blue), var(--teal-color), var(--pastel-green), var(--light-pink));
+            border: none;
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+        
+        .btn-add:hover {
+            opacity: 0.9;
+        }
+        
+        .task-list {
+            margin-top: 2rem;
+        }
+        
+        .task-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            /* Dark Teal border for grounding */
+            border-left: 5px solid var(--dark-teal-accent);
+        }
+        
+        .task-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-completed {
+            border-left: 5px solid var(--success-color); 
+            opacity: 0.7;
+        }
+        
+        .task-item-content {
+            display: flex;
+            align-items: flex-start;
+            flex-grow: 1;
+        }
+
+        .task-completed .task-text,
+        .task-completed .task-description {
+            text-decoration: line-through;
+            color: #999 !important; 
+        }
+        
+        .task-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .task-description {
+            font-size: 0.9rem;
+        }
+
+        /* Styling for the toggle checkbox icon */
+        .toggle-btn {
+            font-size: 1.5rem;
+            line-height: 1; 
+            color: #ccc;
+            transition: color 0.3s;
+            margin-right: 1rem;
+            cursor: pointer;
+            text-decoration: none; 
+        }
+
+        .toggle-btn:hover {
+            /* Dark Teal accent on hover */
+            color: var(--dark-teal-accent); 
+        }
+
+        .task-completed .toggle-btn {
+            color: var(--success-color);
+        }
+
+        .task-actions .btn {
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+        }
+        
+        .btn-delete {
+            background-color: #fff0f0;
+            color: var(--danger-color);
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-delete:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            color: #6c757d;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            color: #dee2e6;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 576px) {
+            .task-item {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+            .task-item-content {
+                margin-bottom: 0.75rem;
+            }
+            .task-actions {
+                display: flex;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark py-3">
+    <div class="container">
+        <!-- AuraNote logo now uses 🌟 emoji and light grape color -->
+        <a class="navbar-brand" href="#">
+            <span class="me-2">🌟</span>AuraNote
+        </a>
+        <div class="d-flex">
+            <!-- Sign Out Button -->
+            <a class="btn btn-logout" th:href="@{/logout}">
+                Sign Out🐥
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container main-container py-5">
+    <div class="card">
+        <div class="card-header text-center">
+            <!-- Text changed to "My To-Dos" and styled with bold cursive font -->
+            <h2><i class="fas fa-clipboard-list me-2"></i><span class="header-title-style">My To-Dos</span></h2>
+        </div>
+        <div class="card-body p-4">
+            <!-- Add Task Form -->
+            <form th:action="@{/todos/add}" th:object="${newTodo}" method="post" class="task-form d-flex flex-column">
+                <div class="d-flex mb-2">
+                    <!-- Placeholder text changed to "What's on your mind for today'-'?" -->
+                    <input type="text" th:field="*{task}" class="task-input form-control" placeholder="What's on your mind for today'-'?" required>
+                    <!-- Button text changed to "+ Pop🍓" -->
+                    <button type="submit" class="btn btn-add ms-2">
+                        + Pop🌸
+                    </button>
+                </div>
+                <input type="text" th:field="*{description}" class="task-input form-control note-input mt-2" placeholder="whisper a little note here (if you like)">
+            </form>
+
+            <!-- Task List -->
+            <div class="task-list">
+                <div th:if="${#lists.isEmpty(todos)}" class="empty-state">
+                    <i class="fas fa-clipboard empty-icon d-block"></i>
+                    <p>You don't have any tasks yet. Add your first task above!</p>
+                </div>
+                
+                <!-- Task Item Loop -->
+                <div th:each="todo : ${todos}" 
+                     class="task-item d-flex justify-content-between align-items-start"
+                     th:classappend="${todo.completed} ? 'task-completed' : ''"
+                     th:id="'task-item-' + ${todo.id}"> <!-- ADDED unique ID for JS manipulation -->
+
+                    <div class="task-item-content">
+                        <!-- Completion Toggle Link: UPDATED to call JS function instead of redirecting -->
+                        <a href="#" 
+                           th:onclick="'toggleTaskCompletion(' + ${todo.id} + ', event)'" 
+                           class="toggle-btn" 
+                           title="Toggle completion">
+                            <!-- Show a checked box if completed, otherwise show an empty square -->
+                            <i th:classappend="${todo.completed} ? 'fa-solid fa-square-check' : 'fa-regular fa-square'" 
+                               th:id="'toggle-icon-' + ${todo.id}">
+                            </i>
+                        </a>
+
+                        <!-- Task Details -->
+                        <div>
+                            <div class="task-text" th:text="${todo.task}"></div>
+                            <div th:if="${todo.description != null and !todo.description.isEmpty()}" 
+                                 th:text="${todo.description}"
+                                 class="task-description text-muted small mt-1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-actions">
+                        <a class="btn btn-delete" th:href="@{'/todos/delete/' + ${todo.id}}" title="Delete task">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    /**
+     * Toggles the completion status of a task visually and asynchronously sends 
+     * the update request to the server without causing a page redirect.
+     * @param {number} taskId The ID of the task to toggle.
+     * @param {Event} event The click event object.
+     */
+    function toggleTaskCompletion(taskId, event) {
+        // 1. PREVENT DEFAULT LINK BEHAVIOR (stops page redirect)
+        event.preventDefault();
+
+        // 2. GET DOM ELEMENTS
+        const taskItem = document.getElementById('task-item-' + taskId);
+        const icon = event.currentTarget.querySelector('i'); // Get the <i> element inside the clicked <a>
+
+        if (!taskItem || !icon) {
+            console.error('Task element or icon not found for ID:', taskId);
+            return;
+        }
+
+        // 3. OPTIMISTIC UI UPDATE (Apply visual changes immediately)
+        const isCompleted = taskItem.classList.toggle('task-completed');
+        
+        // Toggle Font Awesome icon classes
+        if (isCompleted) {
+            icon.classList.remove('fa-regular', 'fa-square');
+            icon.classList.add('fa-solid', 'fa-square-check');
+        } else {
+            icon.classList.remove('fa-solid', 'fa-square-check');
+            icon.classList.add('fa-regular', 'fa-square');
+        }
+
+        // 4. ASYNCHRONOUSLY NOTIFY SERVER
+        // Send a request to the server's toggle endpoint to persist the change.
+        // If the server update fails, a proper application would reverse the UI change, 
+        // but here we just log a message to keep the implementation simple.
+        
+        // This simulates a non-GET request (like POST or PUT) to the existing toggle URL
+        const toggleUrl = `/todos/toggle/${taskId}`;
+
+        fetch(toggleUrl, {
+            method: 'POST', // Use POST to simulate a state change operation
+            headers: {
+                // Assuming the server expects a standard form submission or JSON
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                // If server request fails, log the error (and optionally revert UI)
+                console.error(`Failed to update task ${taskId} status on server.`);
+                // In a real app, you would revert the UI changes here:
+                // taskItem.classList.toggle('task-completed');
+            } else {
+                console.log(`Task ${taskId} status successfully toggled on server.`);
+            }
+        })
+        .catch(error => {
+            console.error('Network error during task toggle:', error);
+            // Revert UI change if a network error occurs
+            // taskItem.classList.toggle('task-completed');
+        });
+    }
+</script>
+</body>
+</html>

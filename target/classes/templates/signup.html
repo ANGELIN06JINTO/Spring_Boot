@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - AuraNote</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* General body styling - Pastel Rainbow Fusion Background */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            /* Pastel Rainbow Fusion Gradient: Purple, Blue, Green, Yellow, Orange, Pink */
+            background: linear-gradient(135deg, #E0BBE4, #A0DFF0, #B4F8C8, #FFDDAA, #FFCC99, #FFC0CB); 
+            background-size: 400% 400%;
+            animation: rainbowShift 20s ease infinite; /* Slightly slower for a gentler flow */
+            color: #4CAF50; /* Deep Green for primary text */
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; 
+            position: relative;
+        }
+
+        /* Animation for the shifting Rainbow Background */
+        @keyframes rainbowShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar styling - fixed to the top */
+        .navbar {
+            position: absolute;
+            top: 0;
+            width: 80%; 
+            max-width: 800px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* White background with subtle green accent */
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
+            border-radius: 0 0 10px 10px; 
+            border-bottom: 3px solid #FFD700; /* Yellow accent for fusion */
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            font-size: 2.5em;
+            margin-right: 10px;
+            color: #FFD700; /* Gold Icon */
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); 
+        }
+
+        .app-name {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5em;
+            color: #4CAF50; /* Darker Green for contrast */
+        }
+
+        /* ---------------------------------------------------- */
+        /* CIRCLE SHAPE with Pastel Glitter Green & Yellow Border */
+        /* ---------------------------------------------------- */
+        
+        .form-card {
+            width: 380px; /* Increased size to fit content */
+            height: 380px; /* Increased size to fit content */
+            max-width: 90%;
+            max-height: 90vh; 
+            padding: 25px; /* Reduced padding slightly */
+            box-sizing: border-box;
+            text-align: center;
+            position: relative;
+            z-index: 10; 
+            
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            /* Pastel Glitter Green Styling */
+            background: #E6F4EA; /* Very pale, pastel green base */
+            
+            /* BORDER CHANGE: Glitter Yellow Border Simulation */
+            border: 3px solid #FFD700; /* Solid Gold/Yellow Border */
+            /* Multi-layer shadow for intense glitter/glow effect */
+            box-shadow: 
+                0 0 10px 5px rgba(255, 215, 0, 0.5), /* Inner subtle gold glow */
+                0 0 20px 10px rgba(255, 193, 7, 0.3), /* Outer brighter gold glow */
+                0 0 30px 15px rgba(255, 215, 0, 0.1); /* Farthest soft glow */
+            
+            border-radius: 50%; 
+            transition: all 0.3s ease;
+            overflow: hidden; 
+        }
+
+        /* Glitter Pattern (kept inside the circle) */
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Subtle Golden Glitter pattern */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.3"><circle cx="15" cy="15" r="1" fill="#FFD700"/><circle cx="50" cy="80" r="1" fill="#FFD700"/><circle cx="85" cy="30" r="1" fill="#FFD700"/></svg>');
+            background-size: 30px 30px;
+            opacity: 0.7;
+            z-index: 1; 
+            border-radius: 50%; 
+        }
+
+        .form-card:hover {
+            /* Increased hover shadow for maximum sparkle effect */
+            box-shadow: 
+                0 0 15px 7px rgba(255, 215, 0, 0.7),
+                0 0 30px 15px rgba(255, 193, 7, 0.5),
+                0 0 40px 20px rgba(255, 215, 0, 0.2); 
+        }
+        
+        .form-card form {
+            width: 90%;
+            z-index: 2; 
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5em; 
+            margin-bottom: 10px; /* Reduced margin */
+            color: #4CAF50; /* Deep Green heading */
+        }
+
+        /* Form inputs */
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px; 
+            margin-bottom: 8px; /* Reduced margin */
+            background: #FFFFFF; 
+            border: 1px solid #FFD700; /* Yellow/Gold border for inputs */
+            border-radius: 8px;
+            color: #333; 
+            font-size: 1em;
+            outline: none;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #FFD700; /* Gold placeholder */
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border: 1px solid #FFA000; /* Brighter gold focus */
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3); 
+        }
+
+        /* Button styling */
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px; 
+            /* Green to Yellow gradient for button */
+            background: linear-gradient(90deg, #8BC34A, #FFD700); 
+            color: #333; /* Dark text for contrast against yellow */
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em; 
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(90deg, #FFD700, #8BC34A);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(255, 215, 0, 0.6); 
+        }
+
+        /* Login link */
+        .form-card p {
+            margin-top: 8px; /* Reduced margin */
+            font-size: 0.85em; 
+            color: #4CAF50; 
+            z-index: 2; 
+        }
+
+        .form-card a {
+            color: #FFD700; /* Gold link */
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+
+        .form-card a:hover {
+            color: #FFA000;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center">
+
+<nav class="navbar">
+    <div class="logo">
+        <span class="logo-icon">&#9734;</span> <span class="app-name">AuraNote</span>
+    </div>
+</nav>
+
+<div class="form-card">
+    <h2 class="signup-title mb-2">Create Account</h2>
+    <p class="signup-subtitle mb-4">AuraNote-Where clarity meets productivity</p>
+    
+    <form th:action="@{/signup}" th:object="${user}" method="post">
+        <div class="mb-4">
+            <input type="text" th:field="*{username}" class="form-control" placeholder="Username" required>
+        </div>
+        <div class="mb-4">
+            <input type="password" th:field="*{password}" class="form-control" placeholder="Password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-3 mt-2">Sign Up</button>
+    </form>
+
+    <div class="text-center mt-4">
+        <p>Already have an account? <a th:href="@{/login}" class="login-link">Login</a></p>
+    </div>
+</div>
+</body>
+</html>
